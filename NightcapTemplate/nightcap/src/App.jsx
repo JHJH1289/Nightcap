@@ -128,7 +128,7 @@ export default function App() {
               isLoggedIn={isLoggedIn}
               authToken={authToken}
               userId={userId}
-              currentUser={currentUser} // ✅ 이 줄 추가
+              currentUser={currentUser}
             />
           }
         />
