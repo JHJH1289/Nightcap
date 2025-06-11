@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import LogoBlock from "./LogoBlock";
 
-// 수정 후
 export default function Header({
-  selectedCategory,
   setSelectedCategory,
   currentUser,
 }) {

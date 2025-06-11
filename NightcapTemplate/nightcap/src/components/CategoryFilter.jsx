@@ -1,9 +1,8 @@
-import React from "react";
 import { useLocation } from "react-router-dom";
 
 export default function CategoryFilter({ selectedCategory, setSelectedCategory }) {
   const location = useLocation();
-  const hiddenRoutes = ["/", "/mypage"]; // 카테고리를 숨길 경로들
+  const hiddenRoutes = ["/", "/mypage"];
 
   if (hiddenRoutes.includes(location.pathname)) return null;
 
