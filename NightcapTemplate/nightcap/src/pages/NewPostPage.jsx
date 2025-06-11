@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function NewPostPage({ setPosts, currentUser }) {
+
+export default function NewPostPage({ currentUser, setPosts }) {
   const navigate = useNavigate();
   const location = useLocation();
   const editingPost = location.state?.post || null;
 
-  const categories = [
-    "연애", "가정", "학업", "직장", "교우", "건강", "메뉴", "당근", "TMI",
-  ];
-
+  const categories = ["연애", "가정", "학업", "직장", "교우", "건강", "메뉴", "당근", "TMI"];
   const [category, setCategory] = useState(editingPost?.category || "연애");
   const [content, setContent] = useState(editingPost?.content || "");
-
-  const [input, setInput] = useState("");
-  const [chatLog, setChatLog] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!currentUser?.id) {
@@ -76,47 +70,18 @@ export default function NewPostPage({ setPosts, currentUser }) {
 
         if (!res.ok) throw new Error("등록 실패");
         const newPost = await res.json();
+
+        // ✅ 등록된 글 HomePage에서 바로 보이게 반영
         setPosts((prev) => [...prev, newPost]);
+
+        alert("등록이 완료되었습니다.");
       }
 
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.error("오류:", err);
       alert("서버 오류가 발생했습니다.");
     }
-  };
-
-  const handleGPTSend = async () => {
-    if (!input.trim() || loading) return;
-    setLoading(true);
-
-    const userMessage = { role: "user", content: input };
-    const newChatLog = [...chatLog, userMessage];
-
-    try {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: newChatLog,
-        }),
-      });
-
-      const data = await res.json();
-      const botMessage = data.choices?.[0]?.message;
-
-      setChatLog([...newChatLog, botMessage]);
-    } catch (err) {
-      console.error("GPT 오류:", err);
-      alert("GPT 응답에 실패했습니다.");
-    }
-
-    setInput("");
-    setLoading(false);
   };
 
   return (
@@ -143,7 +108,9 @@ export default function NewPostPage({ setPosts, currentUser }) {
             className="w-full p-3 rounded bg-[#1a1b3a] text-white"
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
           </select>
         </div>
@@ -160,7 +127,7 @@ export default function NewPostPage({ setPosts, currentUser }) {
           type="submit"
           className="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-md font-bold"
         >
-          등록하기
+          {editingPost ? "수정하기" : "등록하기"}
         </button>
       </form>
     </div>

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ 추가
+import { useNavigate } from "react-router-dom";
 
 export default function MyPage({ currentUser, isLoggedIn }) {
   const [myPosts, setMyPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [commentedPosts, setCommentedPosts] = useState([]);
 
-  const navigate = useNavigate(); // ✅ 추가
+  const navigate = useNavigate();
 
   const getAliasBase = (alias) => {
     return alias?.match(/^[^\d]+/)?.[0] || "기본";
@@ -46,7 +46,7 @@ export default function MyPage({ currentUser, isLoggedIn }) {
           {posts.map((post) => (
             <div
               key={post.id}
-              onClick={() => navigate(`/posts/${post.id}`)} // ✅ 클릭 시 이동
+              onClick={() => navigate(`/posts/${post.id}`)}
               className="cursor-pointer bg-[#1a1b3a] p-4 rounded-xl shadow hover:shadow-lg hover:bg-[#25274a] transition"
             >
               <div className="text-sm text-gray-400 mb-1">{post.title}</div>
@@ -61,7 +61,6 @@ export default function MyPage({ currentUser, isLoggedIn }) {
   return (
     <div className="min-h-screen bg-[#0b0c2a] text-white px-6 py-10">
       <div className="w-2/3 mx-auto space-y-12">
-        {/* 상단 헤더 + 로그아웃 */}
         <div className="bg-[#1a1b3a] p-6 rounded-xl shadow flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">

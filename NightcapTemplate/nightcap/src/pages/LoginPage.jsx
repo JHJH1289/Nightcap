@@ -93,7 +93,6 @@ export default function LoginPage({
             />
           </div>
 
-          {/* ✅ 로그인 상태 유지 */}
           <div className="flex items-center gap-2 text-sm text-white">
             <input
               type="checkbox"
@@ -111,10 +110,7 @@ export default function LoginPage({
             로그인
           </button>
           {errorMsg && <p className="text-red-400 text-center">{errorMsg}</p>}
-          <div className="flex justify-between text-xs text-blue-300 mt-2">
-            <button type="button">아이디 찾기</button>
-            <button type="button">비밀번호 찾기</button>
-          </div>
+
         </form>
         <button
           className="mt-4 w-full text-sm text-blue-300 hover:underline"

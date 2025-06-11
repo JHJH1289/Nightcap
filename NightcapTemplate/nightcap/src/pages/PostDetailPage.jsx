@@ -5,7 +5,6 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
   const { postId } = useParams();
   const navigate = useNavigate();
   const postIdNum = parseInt(postId, 10);
-
   const post = posts.find((p) => p.id === postIdNum);
   const [comments, setComments] = useState([]);
   const [commentReactions, setCommentReactions] = useState({});
@@ -102,7 +101,8 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/comments", {
+      const res = await fetch(`http://localhost:8080/posts/${postIdNum}/comments`, {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newComment),
@@ -174,7 +174,7 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
 
       if (!res.ok) throw new Error("게시글 수정 실패");
 
-      alert("수정 완료! 새로고침해서 반영 확인하세요.");
+      navigate(0);
     } catch (err) {
       console.error("게시글 수정 오류:", err);
       alert("게시글 수정 실패");
@@ -192,77 +192,12 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
       if (!res.ok) throw new Error("게시글 삭제 실패");
 
       alert("삭제 완료");
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.error("게시글 삭제 오류:", err);
       alert("게시글 삭제 실패");
     }
   };
-
-  const handleGPTComment = async () => {
-    if (!post) return;
-
-    try {
-      const apiKey = process.env.REACT_APP_OPENAI_API_KEY;
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content:
-                "너는 고민 상담사야. 사용자의 고민을 듣고 따뜻하게 조언해줘.",
-            },
-            {
-              role: "user",
-              content: post.content || "나는 고민이 있어. 조언을 해줘.",
-            },
-          ],
-        }),
-      });
-
-      const data = await res.json();
-      const gptReply = data.choices?.[0]?.message?.content;
-
-      if (gptReply) {
-        setComments((prev) => [
-          ...prev,
-          {
-            id: "gpt-auto",
-            authorAlias: "ChatGPT",
-            profileIcon: "/icons/chatgpt.png",
-            content: gptReply,
-            createdAt: new Date().toISOString(),
-            likes: 0,
-            dislikes: 0,
-          },
-        ]);
-      } else {
-        alert("GPT 응답이 비어 있습니다.");
-      }
-    } catch (err) {
-      console.error("❌ GPT 댓글 생성 오류:", err);
-    }
-  };
-
-  if (!post) {
-    return (
-      <div className="bg-[#0b0c2a] text-white px-6 py-4">
-        <p className="text-red-400">해당 포스트를 찾을 수 없습니다.</p>
-        <button
-          onClick={() => navigate(-1)}
-          className="underline text-blue-400 mt-2"
-        >
-          ← 돌아가기
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-[#0b0c2a] min-h-screen text-white px-6 py-4">
@@ -284,7 +219,7 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
         {isPostAuthor() && (
           <div className="flex justify-end gap-3 mb-2 text-sm text-gray-400">
             <button
-              onClick={() => navigate("/new", { state: { post } })} // ✅ post 함께 넘기기
+              onClick={() => navigate("/new", { state: { post } })}
               className="hover:text-yellow-300"
             >
               ✏️ 수정
@@ -299,13 +234,6 @@ export default function PostDetailPage({ posts, isLoggedIn, currentUser }) {
           <span>💖 {post.likes || 0}</span>
           <span>💬 {comments.length}</span>
         </div>
-
-        <button
-          onClick={handleGPTComment}
-          className="text-sm bg-blue-700 px-3 py-1 rounded hover:bg-blue-600 mb-4"
-        >
-          💬 GPT 댓글 보기
-        </button>
 
         <hr className="border-gray-700 mb-4" />
         <h3 className="mb-3 text-lg font-semibold">댓글</h3>
