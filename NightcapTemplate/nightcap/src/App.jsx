@@ -15,8 +15,6 @@ export default function App() {
   const location = useLocation();
   const hideHeaderRoutes = ["/", "/login", "/signup", "/mypage"];
   const shouldHideHeader = hideHeaderRoutes.includes(location.pathname);
-
-  const [message, setMessage] = useState("");
   const [posts, setPosts] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authToken, setAuthToken] = useState(null);
@@ -61,16 +59,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-  const saved =
-    JSON.parse(localStorage.getItem("user")) ||
-    JSON.parse(sessionStorage.getItem("user"));
+    const saved =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
 
-  if (saved) {
-    setIsLoggedIn(true);
-    setCurrentUser(saved);
-    setUserId(saved.id);
-  }
-}, []);
+    if (saved) {
+      setIsLoggedIn(true);
+      setCurrentUser(saved);
+      setUserId(saved.id);
+    }
+  }, []);
 
 
   return (
@@ -92,19 +90,19 @@ export default function App() {
         )}
 
       <Routes>
-  <Route path="/" element={<IntroPage />} />
-  <Route
-    path="/home"
-    element={
-      <HomePage
-        posts={posts}
-        setPosts={setPosts}
-        isLoggedIn={isLoggedIn}
-        currentUser={currentUser}
-        selectedCategory={selectedCategory}
-      />
-    }
-  />
+        <Route path="/" element={<IntroPage />} />
+        <Route
+          path="/home"
+          element={
+            <HomePage
+              posts={posts}
+              setPosts={setPosts}
+              isLoggedIn={isLoggedIn}
+              currentUser={currentUser}
+              selectedCategory={selectedCategory}
+            />
+          }
+        />
 
         <Route
           path="/login"
